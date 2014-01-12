@@ -3,6 +3,7 @@ require 'socket'
 require 'zlib'
 require 'thread'
 require 'set'
+require 'stringio'
 
 # External requires
 begin
