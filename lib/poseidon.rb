@@ -4,6 +4,12 @@ require 'zlib'
 require 'thread'
 require 'set'
 
+# External requires
+begin
+  require 'snappy'
+rescue LoadError
+end
+
 # Public API
 require "poseidon/message_to_send"
 require "poseidon/producer"
