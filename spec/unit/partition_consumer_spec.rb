@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe PartitionConsumer do
   before(:each) do
-    @connection = stub('connection')
-    Connection.stub!(:new).and_return(@connection)
+    @connection = double('connection')
+    Connection.stub(:new).and_return(@connection)
 
     offset = Protocol::Offset.new(100)
     partition_offsets = [Protocol::PartitionOffset.new(0, 0, [offset])]
@@ -52,7 +52,7 @@ describe PartitionConsumer do
 
     context "when call returns an error" do
       it "is raised" do
-        @offset_response.first.partition_offsets.first.stub!(:error).and_return(2)
+        @offset_response.first.partition_offsets.first.stub(:error).and_return(2)
         pc = PartitionConsumer.new("test_client", "localhost", 9092, "test_topic",
                                    0, :earliest_offset)
 
@@ -65,7 +65,7 @@ describe PartitionConsumer do
         pc = PartitionConsumer.new("test_client", "localhost", 9092, "test_topic",
                                    0, :earliest_offset)
 
-        @offset_response.first.partition_offsets.first.stub!(:offsets).and_return([])
+        @offset_response.first.partition_offsets.first.stub(:offsets).and_return([])
         expect(pc.next_offset).to eq(0)
       end
     end
@@ -86,7 +86,7 @@ describe PartitionConsumer do
       partition_fetch_response = Protocol::PartitionFetchResponse.new(0, 0, 100, message_set)
       topic_fetch_response = Protocol::TopicFetchResponse.new('test_topic',
                                                     [partition_fetch_response])
-      @response = Protocol::FetchResponse.new(stub('common'), [topic_fetch_response])
+      @response = Protocol::FetchResponse.new(double('common'), [topic_fetch_response])
 
       @connection.stub(:fetch).and_return(@response)
       @pc = PartitionConsumer.new("test_client", "localhost", 9092, "test_topic", 0, :earliest_offset)
@@ -114,7 +114,7 @@ describe PartitionConsumer do
       it "starts from the earliest offset" do
         @pc = PartitionConsumer.new("test_client", "localhost", 9092, "test_topic", 0, -10000)
         pfr = @response.topic_fetch_responses.first.partition_fetch_responses.first
-        pfr.stub!(:error).and_return(1, 1, 0)
+        pfr.stub(:error).and_return(1, 1, 0)
 
         @pc.fetch
       end
@@ -123,7 +123,7 @@ describe PartitionConsumer do
     context "when call returns an error" do
       it "is raised" do
         pfr = @response.topic_fetch_responses.first.partition_fetch_responses.first
-        pfr.stub!(:error).and_return(2)
+        pfr.stub(:error).and_return(2)
 
         expect { @pc.fetch }.to raise_error(Errors::InvalidMessage)
       end

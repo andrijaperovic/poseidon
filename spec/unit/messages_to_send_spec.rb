@@ -8,7 +8,7 @@ describe MessagesToSend do
     @messages << Message.new(:topic => "test2", :value => "hi")
 
 
-    @cluster_metadata = stub('cluster_metdata').as_null_object
+    @cluster_metadata = double('cluster_metdata').as_null_object
     @mts = MessagesToSend.new(@messages, @cluster_metadata)
   end
 
@@ -18,21 +18,21 @@ describe MessagesToSend do
     end
 
     it "asks ClusterMetadata about having metadata" do
-      @cluster_metadata.stub!(:have_metadata_for_topics?).and_return(true)
+      @cluster_metadata.stub(:have_metadata_for_topics?).and_return(true)
 
       expect(@mts.needs_metadata?).to eq(false)
     end
-  end 
+  end
 
   describe "sending" do
     before(:each) do
-      @mfb = stub('mfb', :messages => @messages)
+      @mfb = double('mfb', :messages => @messages)
       @messages_for_brokers = [@mfb]
 
-      @mtsb = stub('messages_to_send_batch').as_null_object
-      @mtsb.stub!(:messages_for_brokers).and_return(@messages_for_brokers)
+      @mtsb = double('messages_to_send_batch').as_null_object
+      @mtsb.stub(:messages_for_brokers).and_return(@messages_for_brokers)
 
-      MessagesToSendBatch.stub!(:new).and_return(@mtsb)
+      MessagesToSendBatch.stub(:new).and_return(@mtsb)
     end
 
     context "is successful" do

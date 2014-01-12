@@ -21,21 +21,21 @@ describe SyncProducer do
 
   describe "sending" do
     before(:each) do
-      Kernel.stub!(:sleep)
+      Kernel.stub(:sleep)
 
-      @broker_pool = stub('broker_pool').as_null_object
-      BrokerPool.stub!(:new).and_return(@broker_pool)
+      @broker_pool = double('broker_pool').as_null_object
+      BrokerPool.stub(:new).and_return(@broker_pool)
 
-      @cluster_metadata = stub('cluster_metadata', :last_refreshed_at => Time.now).as_null_object
-      ClusterMetadata.stub!(:new).and_return(@cluster_metadata)
+      @cluster_metadata = double('cluster_metadata', :last_refreshed_at => Time.now).as_null_object
+      ClusterMetadata.stub(:new).and_return(@cluster_metadata)
 
-      @mbts = stub('messages_to_send', :needs_metadata? => false).as_null_object
-      MessagesToSend.stub!(:new).and_return(@mbts)
+      @mbts = double('messages_to_send', :needs_metadata? => false).as_null_object
+      MessagesToSend.stub(:new).and_return(@mbts)
     end
 
     context "needs metadata" do
       before(:each) do
-        @mbts.stub!(:needs_metadata?).and_return(true)
+        @mbts.stub(:needs_metadata?).and_return(true)
       end
 
       it "fetches metadata" do
@@ -47,7 +47,7 @@ describe SyncProducer do
 
     context "there are messages to send" do
       before(:each) do
-        @mbts.stub!(:messages_for_brokers).and_return([double('mfb').as_null_object])
+        @mbts.stub(:messages_for_brokers).and_return([double('mfb').as_null_object])
       end
 
       it "sends messages" do
@@ -60,7 +60,7 @@ describe SyncProducer do
 
     context "always fails" do
       before(:each) do
-        @mbts.stub!(:all_sent?).and_return(false)
+        @mbts.stub(:all_sent?).and_return(false)
         @sp = SyncProducer.new("test_client", [])
       end
 
@@ -86,7 +86,7 @@ describe SyncProducer do
 
     context "no retries" do
       before(:each) do
-        @mbts.stub!(:all_sent?).and_return(false)
+        @mbts.stub(:all_sent?).and_return(false)
         @sp = SyncProducer.new("test_client", [], max_send_retries: 0)
       end
 
@@ -98,7 +98,7 @@ describe SyncProducer do
 
     context "succeeds on first attempt" do
       before(:each) do
-        @mbts.stub!(:all_sent?).and_return(true)
+        @mbts.stub(:all_sent?).and_return(true)
         @sp = SyncProducer.new("test_client", [])
       end
 
@@ -119,7 +119,7 @@ describe SyncProducer do
 
     context "succeeds on second attempt" do
       before(:each) do
-        @mbts.stub!(:all_sent?).and_return(false, true)
+        @mbts.stub(:all_sent?).and_return(false, true)
         @sp = SyncProducer.new("test_client", [])
       end
 

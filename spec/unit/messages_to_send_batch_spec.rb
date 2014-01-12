@@ -3,8 +3,8 @@ require 'spec_helper'
 describe MessagesToSendBatch do
   context "messages sent to two different brokers" do
     before(:each) do
-      message_conductor = stub('message_conductor')
-      message_conductor.stub!(:destination).and_return([0,0],[1,1])
+      message_conductor = double('message_conductor')
+      message_conductor.stub(:destination).and_return([0,0],[1,1])
 
       @messages = [
         Message.new(:topic => "topic1", :value => "hi"),
@@ -19,7 +19,7 @@ describe MessagesToSendBatch do
 
     it "has all messages in the returned message brokers" do
       messages = @batch.messages_for_brokers.map(&:messages).flatten
-      expect(messages.to_set).to eq(@messages.to_set) 
+      expect(messages.to_set).to eq(@messages.to_set)
     end
   end
 end

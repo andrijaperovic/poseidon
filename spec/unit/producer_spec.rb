@@ -26,7 +26,7 @@ describe Producer do
   describe "sending messages" do
     before(:each) do
       @sync_producer = double('sync_producer').as_null_object
-      SyncProducer.stub!(:new).and_return(@sync_producer)
+      SyncProducer.stub(:new).and_return(@sync_producer)
 
       @producer = Producer.new([], "client_id", :type => :sync)
     end
