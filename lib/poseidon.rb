@@ -5,12 +5,6 @@ require 'thread'
 require 'set'
 require 'stringio'
 
-# External requires
-begin
-  require 'snappy'
-rescue LoadError
-end
-
 # Public API
 require "poseidon/message_to_send"
 require "poseidon/producer"
