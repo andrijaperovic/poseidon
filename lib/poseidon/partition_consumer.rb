@@ -85,7 +85,7 @@ module Poseidon
       fetch_max_wait = options.delete(:max_wait) || max_wait_ms
       fetch_max_bytes = options.delete(:max_bytes) || max_bytes
       fetch_min_bytes = options.delete(:min_bytes) || min_bytes
-      commit = options.delete(:commit) || true
+      commit = options.delete(:commit)
 
       if options.keys.any?
         raise ArgumentError, "Unknown options: #{options.keys.inspect}"
@@ -108,7 +108,7 @@ module Poseidon
         messages = partition_response.message_set.flatten.map do |m|
           FetchedMessage.new(topic_response.topic, m.value, m.key, m.offset)
         end
-        if messages.any? && commit
+        if messages.any? && (commit || commit.nil?)
           @offset = messages.last.offset + 1
         end
         messages
